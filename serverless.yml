@@ -55,6 +55,20 @@ provider:
 #    - exclude-me-dir/**
 
 functions:
+  createTodo:
+    handler: handler.createTodo
+    events:
+      - http:
+          path: todo
+          method: post
+
+  todo:
+    handler: handler.todo
+    events:
+      - http:
+          path: todo/{id}
+          method: get
+
   hello:
     handler: handler.hello
 
@@ -102,3 +116,6 @@ functions:
 #     NewOutput:
 #       Description: "Description for the output"
 #       Value: "Some output value"
+
+plugins:
+  - serverless-offline

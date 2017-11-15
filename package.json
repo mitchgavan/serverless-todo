@@ -9,7 +9,12 @@
   "author": "Mitch Gavan",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.5.1",
     "mongoose": "^4.13.2",
     "validator": "^9.1.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.11.0",
+    "serverless-offline": "^3.16.0"
   }
 }

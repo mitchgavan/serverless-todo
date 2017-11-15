@@ -5,13 +5,10 @@ const model = mongoose.model('Todo', {
   title: {
     type: String,
     required: true,
-    validate: {
-      validator(title) {
-        return validator.isAlphanumeric(title);
-      },
-    },
   },
   completed: {
     type: Boolean,
   },
 });
+
+module.exports = model;

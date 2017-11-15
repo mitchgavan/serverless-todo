@@ -25,7 +25,7 @@ module.exports.todo = (event, context, callback) => {
 
   db.once('open', () => {
     TodoModel
-      .find({ _id: event.pathParameters.id })
+      .find({ _id: id })
       .then((todo) => {
         callback(null, { statusCode: 200, body: JSON.stringify(todo) });
       })

@@ -5,7 +5,7 @@ const TodoModel = require('./model/Todo');
 
 mongoose.Promise = bluebird;
 
-const mongoString = 'todo';
+const mongoString = 'mongodb://localhost/todo-mvc-23';
 
 const createErrorResponse = (statusCode, message) => ({
   statusCode: statusCode || 501,
@@ -75,6 +75,32 @@ module.exports.createTodo = (event, context, callback) => {
         db.close();
       });
   });
+};
+
+module.exports.deleteTodo = (event, context, callback) => {
+  const db = mongoose.connect(mongoString).connection;
+  const id = event.pathParameters.id;
+
+  if (!validator.isAlphanumeric(id)) {
+    callback(null, createErrorResponse(400, 'Incorrect ID'));
+    db.close();
+    return;
+  }
+
+  db.once('open', () => {
+    TodoModel
+      .remove({ _id: id })
+      .then(() => {
+        callback(null, { statusCode: 200, body: JSON.stringify('Ok') });
+      })
+      .catch((err) => {
+        callback(null, createErrorResponse(err.statusCode, err.message));
+      })
+      .finally(() => {
+        db.close();
+      });
+  });
+
 };
 
 module.exports.hello = (event, context, callback) => {

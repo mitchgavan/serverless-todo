@@ -69,6 +69,13 @@ functions:
           path: todo/{id}
           method: get
 
+  deleteTodo:
+    handler: handler.deleteTodo
+    events:
+      - http:
+          path: todo/{id}
+          method: delete
+
   hello:
     handler: handler.hello
 

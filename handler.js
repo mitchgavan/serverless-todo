@@ -5,7 +5,7 @@ const TodoModel = require('./model/Todo');
 
 mongoose.Promise = bluebird;
 
-const mongoString = 'mongodb://localhost/todo-mvc-23';
+const mongoString = 'mongodb://localhost/todomvc';
 
 const createErrorResponse = (statusCode, message) => ({
   statusCode: statusCode || 501,
@@ -103,14 +103,43 @@ module.exports.deleteTodo = (event, context, callback) => {
 
 };
 
-module.exports.hello = (event, context, callback) => {
-  const response = {
-    statusCode: 200,
-    body: JSON.stringify({
-      message: 'Go Serverless v1.0! Your function executed successfully!',
-      input: event,
-    }),
-  };
+module.exports.updateTodo = (event, context, callback) => {
+  const db = mongoose.connect(mongoString).connection;
+  const data = JSON.parse(event.body);
+  const id = event.pathParameters.id;
 
-  callback(null, response);
+  if (!validator.isAlphanumeric) {
+    callback(null, createErrorResponse(400, 'Incorrect Id'));
+    db.close();
+    return;
+  }
+
+  const todo = new TodoModel({
+    _id: id,
+    title: data.title,
+    completed: data.completed,
+  });
+
+  const errors = todo.validateSync();
+
+  if (errors) {
+    callback(null, createErrorResponse(400, 'Incorrect parameter'));
+    db.close();
+    return;
+  }
+
+  db.once('open', () => {
+    TodoModel
+      .findByIdAndUpdate(id, todo)
+      .then(() => {
+        callback(null, { statusCode: 200, body: JSON.stringify('Ok') });
+      })
+      .catch((err) => {
+        callback(null, createErrorResponse(err.statusCode, err.message));
+      })
+      .finally(() => {
+        db.close();
+      });
+  });
+
 };

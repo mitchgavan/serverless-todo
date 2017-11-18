@@ -5,7 +5,7 @@ const TodoModel = require('./model/Todo');
 
 mongoose.Promise = bluebird;
 
-const mongoString = 'mongodb://localhost/todomvc';
+const mongoString = process.env.MONGODB_STRING;
 
 const createErrorResponse = (statusCode, message) => ({
   statusCode: statusCode || 501,
